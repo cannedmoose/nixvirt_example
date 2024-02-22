@@ -1,0 +1,100 @@
+<domain type="kvm">
+  <name>test_vm</name>
+  <uuid>2904419d-b283-4cfd-9f2c-7c3713ff809f</uuid>
+  <memory unit="KiB">2097152</memory>
+  <currentMemory unit="KiB">2097152</currentMemory>
+  <memoryBacking>
+    <source type="memfd"/>
+    <access mode="shared"/>
+  </memoryBacking>
+  <vcpu placement="static">1</vcpu>
+  <os>
+    <type arch="x86_64" machine="pc-i440fx-8.1">hvm</type>
+    <kernel>/nix/store/igk9rcbx1b5s3x4x6lkcfndh3jlhz87k-nixos-system-minimal-23.11.20240124.a77ab16/kernel</kernel>
+    <initrd>/nix/store/r38pzm9vxk2l51rnbibfjx2sf3dxq9wh-initrd-linux-6.1.74/initrd</initrd>
+    <cmdline>loglevel=4 net.ifnames=0 loglevel=7 init=/nix/store/igk9rcbx1b5s3x4x6lkcfndh3jlhz87k-nixos-system-minimal-23.11.20240124.a77ab16/init regInfo=/nix/store/rj0q8ss6c7w26lz4pp6g7ari3sd7g36q-closure-info/registration  console=tty0 console=ttyS0,115200n8</cmdline>
+    <boot dev="hd"/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode="host-passthrough" check="none" migratable="on"/>
+  <clock offset="utc">
+    <timer name="rtc" tickpolicy="catchup"/>
+    <timer name="pit" tickpolicy="delay"/>
+    <timer name="hpet" present="no"/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <emulator>/nix/store/403705srxkq30a0rfchjf7lkmjc10cyh-qemu-8.1.3/bin/qemu-system-x86_64</emulator>
+    <controller type="usb" index="0" model="piix3-uhci">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x2"/>
+    </controller>
+    <controller type="pci" index="0" model="pci-root"/>
+    <controller type="virtio-serial" index="0">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x06" function="0x0"/>
+    </controller>
+    <filesystem type="mount" accessmode="passthrough">
+      <source dir="/nix/store"/>
+      <target dir="nix-store"/>
+      <readonly/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    </filesystem>
+    <interface type="network">
+      <mac address="52:54:00:ff:ff:00"/>
+      <source network="default"/>
+      <model type="virtio"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x04" function="0x0"/>
+    </interface>
+    <serial type="pty">
+      <target type="isa-serial" port="0">
+        <model name="isa-serial"/>
+      </target>
+    </serial>
+    <console type="pty">
+      <target type="serial" port="0"/>
+    </console>
+    <channel type="spicevmc">
+      <target type="virtio" name="com.redhat.spice.0"/>
+      <address type="virtio-serial" controller="0" bus="0" port="1"/>
+    </channel>
+    <input type="tablet" bus="usb">
+      <address type="usb" bus="0" port="2"/>
+    </input>
+    <input type="mouse" bus="ps2"/>
+    <input type="keyboard" bus="ps2"/>
+    <graphics type="spice" autoport="yes">
+      <listen type="address"/>
+      <image compression="off"/>
+    </graphics>
+    <sound model="ich9">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
+    </sound>
+    <audio id="1" type="spice"/>
+    <video>
+      <model type="qxl" ram="65536" vram="65536" vgamem="16384" heads="1" primary="yes"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x02" function="0x0"/>
+    </video>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="1.1"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="1.2"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="1.3"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="1.4"/>
+    </redirdev>
+    <hub type="usb">
+      <address type="usb" bus="0" port="1"/>
+    </hub>
+    <memballoon model="virtio">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
+    </memballoon>
+  </devices>
+</domain>
